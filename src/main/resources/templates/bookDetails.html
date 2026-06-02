@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <title>Book Details</title>
+</head>
+<body>
+<h1>Book Details</h1>
+
+<div th:if="${book}">
+    <p><strong>Title:</strong> <span th:text="${book.title}"></span></p>
+    <p><strong>Author:</strong> <span th:text="${book.author}"></span></p>
+    <p><strong>Price:</strong> <span th:text="${'$' + book.price}"></span></p>
+    <p><strong>Available Copies:</strong> <span th:text="${book.copies}"></span></p>
+</div>
+
+<div th:unless="${book}">
+    <p style="color:red">Book not found.</p>
+</div>
+
+<hr/>
+<a th:href="@{/books}">Back to List</a>
+
+<!-- Role-Based UI: Only Admins can see the Edit link on the details page -->
+<span sec:authorize="hasRole('ADMIN')">
+        | <a th:href="@{/books/edit/{id}(id=${book.id})}">Edit this Book</a>
+    </span>
+</body>
+</html>
+
