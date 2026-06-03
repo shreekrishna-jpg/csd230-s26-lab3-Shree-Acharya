@@ -1,8 +1,18 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head><title>Your Shopping Cart</title></head>
 <body>
+
+<div style="float:right">
+    Logged in as: <strong><span sec:authentication="name">User</span></strong>
+    <form th:action="@{/logout}" method="post" style="display:inline;">
+        <input type="submit" value="Sign Out"/>
+    </form>
+</div>
+
 <h1>Your Shopping Cart</h1>
+
 <div th:if="${cart.products.empty}">
     <p>Your cart is empty. <a th:href="@{/books}">Go shopping!</a></p>
 </div>
@@ -19,7 +29,6 @@
     <tbody>
     <tr th:each="product : ${cart.products}">
         <td>
-            <!-- Conditional rendering based on Class Type -->
             <span th:if="${product instanceof T(csd230.s26.lab1.entities.PublicationEntity)}"
                   th:text="${product.title}"></span>
             <span th:if="${product instanceof T(csd230.s26.lab1.entities.TicketEntity)}"
@@ -31,8 +40,8 @@
     </tr>
     </tbody>
 </table>
+
 <br/>
 <a th:href="@{/books}">Back to Store</a>
 </body>
 </html>
-

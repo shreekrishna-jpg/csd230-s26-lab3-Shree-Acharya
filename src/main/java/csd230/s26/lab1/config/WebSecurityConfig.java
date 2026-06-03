@@ -24,13 +24,13 @@ public class WebSecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests((requests) -> requests
-                        // 1. Allow public access to specific endpoints
-                        .requestMatchers("/h2-console/**", "/login", "/css/**", "/js/**").permitAll()
+                        .requestMatchers("/h2-console/**", "/login", "/register", "/css/**", "/js/**").permitAll()
 
-                        // 2. Admin only endpoints (CRUD operations on books)
+                        // Admin only: CRUD on books and magazines
                         .requestMatchers("/books/add", "/books/edit/**", "/books/delete/**").hasRole("ADMIN")
+                        .requestMatchers("/magazines/add", "/magazines/edit/**", "/magazines/delete/**").hasRole("ADMIN")
 
-                        // 3. All other requests (view books, cart) require login
+                        // Everything else requires login
                         .anyRequest().authenticated()
                 )
                 .formLogin((form) -> form
@@ -44,10 +44,8 @@ public class WebSecurityConfig {
                         .permitAll()
                 );
 
-        // Required for H2 Console to work with Spring Security (it uses frames)
+        // Required for H2 Console
         http.headers(headers -> headers.frameOptions(frameOptions -> frameOptions.disable()));
-
-        // Disable CSRF specifically for H2 Console
         http.csrf(csrf -> csrf.ignoringRequestMatchers("/h2-console/**"));
 
         return http.build();
@@ -60,7 +58,6 @@ public class WebSecurityConfig {
 
     @Bean
     public DaoAuthenticationProvider authenticationProvider() {
-        // FIX: Pass userDetailsService to the constructor
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider(userDetailsService);
         authProvider.setPasswordEncoder(passwordEncoder());
         return authProvider;

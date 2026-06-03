@@ -120,39 +120,20 @@ public class Lab1Application implements CommandLineRunner {
 			System.out.println(product.toString());
 		});
 
-		// 1. Create and save a Cart
-		CartEntity cart = new CartEntity();
-		cartRepository.save(cart);
-
-// 2. Retrieve an existing book from your generation loop
-		// get the first book
-		BookEntity someBook = bookRepository.findAll().get(0);  // ... retrieve one of your generated books ...
-
-// 3. Add to cart and save
-		cart.addProduct(someBook);
-		cartRepository.save(cart);
-
-// 4. Verification Output
-		System.out.println("\n--- Cart Verification ---");
-		cartRepository.findAll().forEach(c -> {
-			System.out.println("Cart ID: " + c.getId());
-			c.getProducts().forEach(p -> System.out.println(" - Contains: " + p.toString()));
-		});
-
 		// ------------------------------------
 		// CREATE USERS (Lecture 2.6)
 		// ------------------------------------
+		if (userRepository.findByUsername("admin") == null) {
+			UserEntity admin = new UserEntity("admin", passwordEncoder.encode("admin"), "ADMIN");
+			userRepository.save(admin);
+		}
 
-		// Admin User (Can Add/Edit/Delete)
-		UserEntity admin = new UserEntity("admin", passwordEncoder.encode("admin"), "ADMIN");
-		userRepository.save(admin);
-
-		// Regular User (Can only View/Buy)
-		UserEntity user = new UserEntity("user", passwordEncoder.encode("user"), "USER");
-		userRepository.save(user);
+		if (userRepository.findByUsername("user") == null) {
+			UserEntity user = new UserEntity("user", passwordEncoder.encode("user"), "USER");
+			userRepository.save(user);
+		}
 
 		System.out.println("Default users created: admin/admin and user/user");
-
 
 	}
 }
